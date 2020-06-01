@@ -19,6 +19,8 @@
       });
       host1.open('http://localhost:3001/iframe1.html', {
         style: 'border: 0',
+        width: '100%',
+        height: '100px',
       });
       host1.on('ready', function () {
         console.log('IFRAME 1: host ready');
