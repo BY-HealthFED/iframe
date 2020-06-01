@@ -9,6 +9,7 @@ import { createRegexp } from './whitelist';
 interface HostConfig {
   allowedOrigins?: string[];
   target?: string | HTMLElement;
+  autoHeight?: boolean;
 }
 
 class Host {
@@ -25,6 +26,10 @@ class Host {
     this._channel = new Channel(this._sendMessage);
     this._allowedOrigins = createRegexp(config?.allowedOrigins || []);
     this._target = this._findTargetElement(config?.target);
+
+    if (config?.autoHeight) {
+      this._autoHeight();
+    }
   }
 
   private _findTargetElement(target?: string | HTMLElement) {
@@ -35,6 +40,12 @@ class Host {
     } else {
       return document.body;
     }
+  }
+
+  private _autoHeight() {
+    this._channel.on('resize', ({ height }: { height: number }) => {
+      this._iframe?.setAttribute('height', `${height}px`);
+    });
   }
 
   private _sendMessage = (message: string) => {

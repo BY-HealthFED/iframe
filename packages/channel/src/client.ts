@@ -8,17 +8,23 @@ import { createRegexp } from './whitelist';
 
 interface ClientConfig {
   allowedOrigins?: string[];
+  autoHeight?: boolean;
 }
 
 class Client {
   private _channel: Channel;
   private _targetWindow: Window;
   private _allowedOrigins: RegExp;
+  private _prevHeight?: number;
 
   constructor(config?: ClientConfig) {
     this._channel = new Channel(this._sendMessage);
     this._targetWindow = this._findParentWindow();
     this._allowedOrigins = createRegexp(config?.allowedOrigins || []);
+
+    if (config?.autoHeight) {
+      this._autoHeight();
+    }
   }
 
   private _findParentWindow() {
@@ -27,6 +33,16 @@ class Client {
     } else if (window.opener) {
       return window.opener;
     }
+  }
+
+  private _autoHeight() {
+    let timer: any;
+    this._channel.on('ready', () => {
+      timer = setInterval(this.resize, 100);
+    });
+    this._channel.on('disconnected', () => {
+      clearInterval(timer);
+    });
   }
 
   private _sendMessage = (message: string) => {
@@ -62,6 +78,19 @@ class Client {
   public emit(event: string, data?: any) {
     this._channel.emit(event, data);
   }
+
+  public resize = () => {
+    const rect = document.documentElement.getBoundingClientRect();
+    if (this._prevHeight === rect.height) {
+      return;
+    }
+
+    this._prevHeight = rect.height;
+    this._channel.emit('resize', {
+      height: rect.height,
+      width: rect.width,
+    });
+  };
 }
 
 export { Client };

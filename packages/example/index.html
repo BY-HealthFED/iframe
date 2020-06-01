@@ -16,6 +16,7 @@
       var host1 = new BY_HEALTH.Channel.Host({
         allowedOrigins: ['http://localhost:*'],
         target: '#container',
+        autoHeight: true,
       });
       host1.open('http://localhost:3001/iframe1.html', {
         style: 'border: 0',
@@ -29,6 +30,7 @@
       host1.on('world', function () {
         console.log('IFRAME 1: host receive "hello world!" from client');
       });
+      host1.on('resize', console.log);
 
       // ========= HOST 2 =========
       var host2 = new BY_HEALTH.Channel.Host({

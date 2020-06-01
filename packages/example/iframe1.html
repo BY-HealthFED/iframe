@@ -6,13 +6,14 @@
     <title>IFRAME 1</title>
   </head>
   <body>
-    <p>
+    <p id="text">
       IFRAME 1
     </p>
     <script src="./node_modules/@byhealth/channel/dist/channel.min.js"></script>
     <script>
       var client = new BY_HEALTH.Channel.Client({
         allowedOrigins: ['http://localhost:3000'],
+        autoHeight: true,
       });
       client.connect();
       client.on('ready', function () {
