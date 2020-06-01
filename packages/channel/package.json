@@ -1,0 +1,41 @@
+{
+  "name": "@byhealth/channel",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/channel.cjs.js",
+  "module": "dist/channel.esm.js",
+  "browser": "dist/channel.min.js",
+  "types": "dist/channel.d.ts",
+  "directories": {
+    "lib": "dist"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c rollup.config.ts",
+    "clean": "rimraf ./dist"
+  },
+  "dependencies": {
+    "eventemitter3": "^4.0.4",
+    "tslib": "^2.0.0",
+    "uuid": "^8.1.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^12.0.0",
+    "@rollup/plugin-node-resolve": "^8.0.0",
+    "@rollup/plugin-typescript": "^4.1.2",
+    "@types/uuid": "^8.0.0",
+    "rollup": "^2.10.9",
+    "rollup-plugin-dts": "^1.4.7",
+    "rollup-plugin-terser": "^6.1.0",
+    "serve": "^11.3.1",
+    "typescript": "^3.9.3"
+  },
+  "homepage": "",
+  "author": "pengxp <pengxp@by-health.com>",
+  "license": "MIT"
+}

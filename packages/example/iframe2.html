@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IFRAME 2</title>
+  </head>
+  <body>
+    <p>
+      IFRAME 2
+    </p>
+    <script src="./node_modules/@byhealth/channel/dist/channel.min.js"></script>
+    <script>
+      var client = new BY_HEALTH.Channel.Client();
+      client.connect();
+      client.on('ready', function () {
+        console.log('IFRAME 2: client ready.');
+      });
+      client.on('hello', function (now) {
+        console.log('IFRAME 2: client receive hello from host.' + now);
+        client.emit('world', 'hello');
+      });
+    </script>
+  </body>
+</html>

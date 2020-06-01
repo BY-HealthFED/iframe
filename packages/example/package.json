@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "example",
+  "scripts": {
+    "start": "serve -n -p 3000",
+    "client": "serve -n -p 3001"
+  },
+  "dependencies": {
+    "@byhealth/channel": "^0.0.0"
+  },
+  "devDependencies": {
+    "serve": "^11.3.1"
+  },
+  "homepage": "",
+  "author": "pengxp <pengxp@by-health.com>",
+  "license": "MIT"
+}

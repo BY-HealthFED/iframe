@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+  </head>
+  <body>
+    <div>
+      INDEX
+    </div>
+    <div id="container"></div>
+    <script src="./node_modules/@byhealth/channel/dist/channel.min.js"></script>
+    <script>
+      // ========= HOST 1 =========
+      var host1 = new BY_HEALTH.Channel.Host({
+        target: '#container',
+      });
+      host1.open('http://localhost:3001/iframe1.html', {
+        style: 'border: 0',
+      });
+      host1.on('ready', function () {
+        console.log('IFRAME 1: host ready');
+        host1.emit('hello', Date.now());
+      });
+      host1.on('world', function () {
+        console.log('IFRAME 1: host receive "hello world!" from client');
+      });
+
+      // ========= HOST 2 =========
+      var host2 = new BY_HEALTH.Channel.Host({
+        target: '#container',
+      });
+      host2.open('./iframe2.html');
+      host2.on('ready', function () {
+        console.log('IFRAME 2: host ready');
+        host2.emit('hello', Date.now());
+      });
+      host2.on('world', function () {
+        console.log('IFRAME 2: host receive "hello world!" from client');
+      });
+    </script>
+  </body>
+</html>
