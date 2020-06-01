@@ -14,6 +14,7 @@
     <script>
       // ========= HOST 1 =========
       var host1 = new BY_HEALTH.Channel.Host({
+        allowedOrigins: ['http://localhost:*'],
         target: '#container',
       });
       host1.open('http://localhost:3001/iframe1.html', {
@@ -29,6 +30,7 @@
 
       // ========= HOST 2 =========
       var host2 = new BY_HEALTH.Channel.Host({
+        allowedOrigins: ['http://localhost:*'],
         target: '#container',
       });
       host2.open('./iframe2.html');

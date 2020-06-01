@@ -4,16 +4,21 @@
  * Copyright © 2016-present By-Health Co Ltd. All rights reserved.
  */
 import { Channel } from './channel';
+import { createRegexp } from './whitelist';
 
-interface ClientConfig {}
+interface ClientConfig {
+  allowedOrigins?: string[];
+}
 
 class Client {
   private _channel: Channel;
   private _targetWindow: Window;
+  private _allowedOrigins: RegExp;
 
   constructor(config: ClientConfig) {
     this._channel = new Channel(this._sendMessage);
     this._targetWindow = this._findParentWindow();
+    this._allowedOrigins = createRegexp(config.allowedOrigins || []);
   }
 
   private _findParentWindow() {
@@ -29,6 +34,10 @@ class Client {
   };
 
   private _receiveMessage = (event: MessageEvent) => {
+    if (!this._allowedOrigins.exec(event.origin)) {
+      return;
+    }
+
     this._channel.receiveMessage(event.data);
   };
 

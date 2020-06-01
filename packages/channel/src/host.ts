@@ -4,13 +4,16 @@
  * Copyright © 2016-present By-Health Co Ltd. All rights reserved.
  */
 import { Channel } from './channel';
+import { createRegexp } from './whitelist';
 
 interface HostConfig {
+  allowedOrigins?: string[];
   target?: string | HTMLElement;
 }
 
 class Host {
   private _channel: Channel;
+  private _allowedOrigins: RegExp;
   private _target: HTMLElement;
   private _iframe?: HTMLIFrameElement;
 
@@ -20,13 +23,17 @@ class Host {
 
   constructor(config: HostConfig) {
     this._channel = new Channel(this._sendMessage);
+    this._allowedOrigins = createRegexp(config.allowedOrigins || []);
+    this._target = this._findTargetElement(config.target);
+  }
 
-    if (typeof config.target === 'string') {
-      this._target = document.querySelector(config.target) as HTMLElement;
-    } else if (config.target instanceof HTMLElement) {
-      this._target = config.target;
+  private _findTargetElement(target?: string | HTMLElement) {
+    if (typeof target === 'string') {
+      return document.querySelector(target) as HTMLElement;
+    } else if (target instanceof HTMLElement) {
+      return target;
     } else {
-      this._target = document.body;
+      return document.body;
     }
   }
 
@@ -35,6 +42,10 @@ class Host {
   };
 
   private _receiveMessage = (event: MessageEvent) => {
+    if (!this._allowedOrigins.exec(event.origin)) {
+      return;
+    }
+
     this._channel.receiveMessage(event.data);
   };
 
