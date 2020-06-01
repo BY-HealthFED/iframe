@@ -42,7 +42,7 @@ class Host {
   };
 
   private _receiveMessage = (event: MessageEvent) => {
-    if (!this._allowedOrigins.exec(event.origin)) {
+    if (!this._allowedOrigins.test(event.origin)) {
       return;
     }
 
