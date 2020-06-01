@@ -21,10 +21,10 @@ class Host {
     return this._iframe;
   }
 
-  constructor(config: HostConfig) {
+  constructor(config?: HostConfig) {
     this._channel = new Channel(this._sendMessage);
-    this._allowedOrigins = createRegexp(config.allowedOrigins || []);
-    this._target = this._findTargetElement(config.target);
+    this._allowedOrigins = createRegexp(config?.allowedOrigins || []);
+    this._target = this._findTargetElement(config?.target);
   }
 
   private _findTargetElement(target?: string | HTMLElement) {

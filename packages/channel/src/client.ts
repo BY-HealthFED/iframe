@@ -15,10 +15,10 @@ class Client {
   private _targetWindow: Window;
   private _allowedOrigins: RegExp;
 
-  constructor(config: ClientConfig) {
+  constructor(config?: ClientConfig) {
     this._channel = new Channel(this._sendMessage);
     this._targetWindow = this._findParentWindow();
-    this._allowedOrigins = createRegexp(config.allowedOrigins || []);
+    this._allowedOrigins = createRegexp(config?.allowedOrigins || []);
   }
 
   private _findParentWindow() {
