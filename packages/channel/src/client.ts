@@ -51,20 +51,14 @@ class Client {
     this._channel.disconnect();
   }
 
-  public on(event: 'ready', fn: () => void): void;
-  public on(event: string, fn: (...args: any[]) => void, context?: any): void;
   public on(event: string, fn: (...args: any[]) => void, context?: any) {
     this._channel.on(event, fn, context);
   }
 
-  public off(event: 'ready', fn: () => void): void;
-  public off(event: string, fn: (...args: any[]) => void, context?: any): void;
   public off(event: string, fn: (...args: any[]) => void, context?: any) {
     this._channel.off(event, fn, context);
   }
 
-  public emit(event: 'ready'): void;
-  public emit(event: string, data?: any): void;
   public emit(event: string, data?: any) {
     this._channel.emit(event, data);
   }

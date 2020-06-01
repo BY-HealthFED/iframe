@@ -45,17 +45,17 @@ class Channel {
         case MessageType.SYN_ACK:
           this._sendMessage(message.sender, MessageType.ACK);
           this._remoteId = message.sender;
-          this._emitter.emit('ready');
+          this._emitter.emit('ready', this._remoteId);
           break;
 
         case MessageType.ACK:
+          this._emitter.emit('ready', this._remoteId);
           this._remoteId = message.sender;
-          this._emitter.emit('ready');
           break;
 
         case MessageType.FIN:
+          this._emitter.emit('disconnected', this._remoteId);
           this._remoteId = undefined;
-          this._emitter.emit('disconnected');
           break;
 
         case MessageType.EVENT:
@@ -71,6 +71,9 @@ class Channel {
   };
 
   public connect() {
+    if (this._remoteId) {
+      throw new Error('The connection is ready.');
+    }
     this._sendMessage(BROADCAST_ADDR, MessageType.SYN);
   }
 
@@ -82,8 +85,6 @@ class Channel {
     this._remoteId = undefined;
   }
 
-  public on(event: 'ready', fn: () => void): void;
-  public on(event: string, fn: (...args: any[]) => void, context?: any): void;
   public on(event: string, fn: (...args: any[]) => void, context?: any) {
     this._emitter.on(event, fn, context);
   }
