@@ -49,8 +49,8 @@ class Channel {
           break;
 
         case MessageType.ACK:
-          this._emitter.emit('ready', this._remoteId);
           this._remoteId = message.sender;
+          this._emitter.emit('ready', this._remoteId);
           break;
 
         case MessageType.FIN:
