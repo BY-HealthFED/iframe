@@ -38,3 +38,50 @@ client.on('ready', function () {
 });
 client.connect();
 ```
+
+### APIs
+
+## HostConfig
+
+```ts
+interface HostConfig {
+  /**
+   * Example: ['https://*.by-health.com', 'https://*.4000916916.com']
+   */
+  allowedOrigins?: string[];
+
+  /**
+   * Mount point as selector or target element.
+   */
+  target?: string | HTMLElement;
+
+  /**
+   * Auto adjust height when receive 'resize' event from client
+   */
+  autoHeight?: boolean;
+}
+```
+
+## Host
+
+### `host.open(url: string, attr?: any): void`
+
+### `host.close(): void`
+
+### `host.on(event: string, fn: (...args: any[]) => void, context?: any): void`
+
+### `host.off(event: string, fn: (...args: any[]) => void, context?: any): void`
+
+### `host.emit(event: string, data?: any): void`
+
+## Client
+
+### `client.connect(): void`
+
+### `client.disconnect(): void`
+
+### `client.on(event: string, fn: (...args: any[]) => void, context?: any): void`
+
+### `client.off(event: string, fn: (...args: any[]) => void, context?: any): void`
+
+### `client.emit(event: string, data?: any): void`
