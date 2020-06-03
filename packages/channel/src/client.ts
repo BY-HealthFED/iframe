@@ -13,7 +13,7 @@ interface ClientConfig {
 
 class Client {
   private _channel: Channel;
-  private _targetWindow: Window;
+  private _targetWindow?: Window;
   private _allowedOrigins: RegExp;
   private _prevHeight?: number;
 
@@ -32,6 +32,8 @@ class Client {
       return window.parent;
     } else if (window.opener) {
       return window.opener;
+    } else {
+      return null;
     }
   }
 
@@ -46,7 +48,7 @@ class Client {
   }
 
   private _sendMessage = (message: string) => {
-    this._targetWindow.postMessage(message, '*');
+    this._targetWindow!.postMessage(message, '*');
   };
 
   private _receiveMessage = (event: MessageEvent) => {
@@ -58,11 +60,23 @@ class Client {
   };
 
   public connect() {
+    if (!this._targetWindow) {
+      this._channel.emit('error', {
+        code: 1,
+        message: "Couldn't find parent window.",
+      });
+      return;
+    }
+
     window.addEventListener('message', this._receiveMessage);
     this._channel.connect();
   }
 
   public disconnect() {
+    if (!this._targetWindow) {
+      return;
+    }
+
     window.removeEventListener('message', this._receiveMessage);
     this._channel.disconnect();
   }
@@ -75,10 +89,6 @@ class Client {
     this._channel.off(event, fn, context);
   }
 
-  public emit(event: string, data?: any) {
-    this._channel.emit(event, data);
-  }
-
   public resize = () => {
     const rect = document.documentElement.getBoundingClientRect();
     if (this._prevHeight === rect.height) {
@@ -86,7 +96,7 @@ class Client {
     }
 
     this._prevHeight = rect.height;
-    this._channel.emit('resize', {
+    this._channel.send('resize', {
       height: rect.height,
       width: rect.width,
     });

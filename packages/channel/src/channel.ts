@@ -93,7 +93,11 @@ class Channel {
     this._emitter.off(event, fn, context);
   }
 
-  public emit(event: string, data?: any) {
+  public emit(event: string, ...args: any[]) {
+    this._emitter.emit(event, ...args);
+  }
+
+  public send(event: string, data?: any) {
     if (!this._remoteId) {
       throw new Error('The connection is not ready.');
     }

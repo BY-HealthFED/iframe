@@ -93,7 +93,7 @@ class Host {
   }
 
   public emit(event: string, data?: any) {
-    this._channel.emit(event, data);
+    this._channel.send(event, data);
   }
 }
 
