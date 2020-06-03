@@ -15,7 +15,6 @@
         allowedOrigins: ['http://localhost:3000'],
         autoHeight: true,
       });
-      client.connect();
       client.on('ready', function () {
         console.log('IFRAME 1: client ready.');
       });
@@ -23,6 +22,10 @@
         console.log('IFRAME 1: client receive hello from host.' + now);
         client.emit('world', 'hello');
       });
+      client.on('error', function (err) {
+        console.log(err);
+      });
+      client.connect();
     </script>
   </body>
 </html>

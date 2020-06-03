@@ -14,7 +14,6 @@
       var client = new BY_HEALTH.Channel.Client({
         allowedOrigins: ['http://localhost:*'],
       });
-      client.connect();
       client.on('ready', function () {
         console.log('IFRAME 2: client ready.');
       });
@@ -22,6 +21,7 @@
         console.log('IFRAME 2: client receive hello from host.' + now);
         client.emit('world', 'hello');
       });
+      client.connect();
     </script>
   </body>
 </html>
