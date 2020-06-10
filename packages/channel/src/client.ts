@@ -93,6 +93,10 @@ class Client {
     this._channel.off(event, fn, context);
   }
 
+  public emit(event: string, data?: any) {
+    this._channel.send(event, data);
+  }
+
   public resize = () => {
     const rect = document.documentElement.getBoundingClientRect();
     if (this._prevHeight === rect.height) {
