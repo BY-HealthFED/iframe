@@ -89,6 +89,10 @@ class Channel {
     this._emitter.on(event, fn, context);
   }
 
+  public once(event: string, fn: (...args: any[]) => void, context?: any) {
+    this._emitter.once(event, fn, context);
+  }
+
   public off(event: string, fn: (...args: any[]) => void, context?: any) {
     this._emitter.off(event, fn, context);
   }

@@ -18,6 +18,9 @@ const host = new Host({
 host.on('ready', function () {
   console.log('Host: client ready');
 });
+host.on('error', function (error) {
+  console.error(error);
+});
 host.open('./iframe.html', {
   style: 'border: 0',
   width: '100%',
@@ -35,6 +38,9 @@ const client = new Client({
 });
 client.on('ready', function () {
   console.log('Client: Host ready');
+});
+client.on('error', function (error) {
+  console.error(error);
 });
 client.connect();
 ```
@@ -66,22 +72,101 @@ interface HostConfig {
 
 ### `host.open(url: string, attr?: any): void`
 
+Open iframe.
+
+- `url`: iframe open url
+- `attrs`: iframe attributes, eg: width, height, style, class...
+
 ### `host.close(): void`
+
+Close (remove) iframe.
 
 ### `host.on(event: string, fn: (...args: any[]) => void, context?: any): void`
 
+Add an event listener.
+
+- `event`: event name
+- `fn`: event callback
+- `context`: callback context (this)
+
+### `host.once(event: string, fn: (...args: any[]) => void, context?: any): void`
+
+Add an event listener, the same as `host.on()`, but the callback is automatically deleted after the call.
+
+- `event`: event name
+- `fn`: event callback
+- `context`: callback context (this)
+
 ### `host.off(event: string, fn: (...args: any[]) => void, context?: any): void`
 
+Remove an event listener.
+
+- `event`: event name
+- `fn`: event callback
+- `context`: callback context (this)
+
 ### `host.emit(event: string, data?: any): void`
+
+Dispatch `event`, the client will receive it.
+
+- `event`: event name
+- `data`: payload
+
+---
+
+## ClientConfig
+
+```ts
+interface ClientConfig {
+  /**
+   * Example: ['https://*.by-health.com', 'https://*.4000916916.com']
+   */
+  allowedOrigins?: string[];
+
+  /**
+   * Add window.addEventListener('resize') listener, when the height of the element changes, it automatically emit `resize` event to the host
+   */
+  autoHeight?: boolean;
+}
+```
 
 ## Client
 
 ### `client.connect(): void`
 
+Connect to host.
+
 ### `client.disconnect(): void`
+
+Disconnect to host.
 
 ### `client.on(event: string, fn: (...args: any[]) => void, context?: any): void`
 
+Add an event listener.
+
+- `event`: event name
+- `fn`: event callback
+- `context`: callback context (this)
+
+### `client.once(event: string, fn: (...args: any[]) => void, context?: any): void`
+
+Add an event listener, the same as `client.on()`, but the callback is automatically deleted after the call.
+
+- `event`: event name
+- `fn`: event callback
+- `context`: callback context (this)
+
 ### `client.off(event: string, fn: (...args: any[]) => void, context?: any): void`
 
+Remove an event listener.
+
+- `event`: event name
+- `fn`: event callback
+- `context`: callback context (this)
+
 ### `client.emit(event: string, data?: any): void`
+
+Dispatch `event`, the host will receive it.
+
+- `event`: event name
+- `data`: payload

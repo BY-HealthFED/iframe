@@ -88,6 +88,10 @@ class Host {
     this._channel.on(event, fn, context);
   }
 
+  public once(event: string, fn: (...args: any[]) => void, context?: any) {
+    this._channel.on(event, fn, context);
+  }
+
   public off(event: string, fn: (...args: any[]) => void, context?: any) {
     this._channel.off(event, fn, context);
   }
