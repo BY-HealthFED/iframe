@@ -8,3 +8,4 @@ import { Client } from './client';
 
 export { Host };
 export { Client };
+export default { Host, Client };

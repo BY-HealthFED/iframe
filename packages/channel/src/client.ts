@@ -3,112 +3,37 @@
  *
  * Copyright © 2016-present By-Health Co Ltd. All rights reserved.
  */
-import { Channel } from './channel';
-import { createRegexp } from './whitelist';
 
-interface ClientConfig {
-  allowedOrigins?: string[];
-  autoHeight?: boolean;
-}
+import { Socket } from './internal/socket';
 
 class Client {
-  private _channel: Channel;
-  private _targetWindow?: Window;
-  private _allowedOrigins: RegExp;
-  private _prevHeight?: number;
+  private _socket: Socket;
 
-  constructor(config?: ClientConfig) {
-    this._channel = new Channel(this._sendMessage);
-    this._targetWindow = this._findParentWindow();
-    this._allowedOrigins = createRegexp(config?.allowedOrigins || []);
-
-    if (config?.autoHeight) {
-      this._autoHeight();
-    }
+  constructor() {
+    this._socket = new Socket();
   }
-
-  private _findParentWindow() {
-    if (window.parent !== window) {
-      return window.parent;
-    } else if (window.opener) {
-      return window.opener;
-    } else {
-      return null;
-    }
-  }
-
-  private _autoHeight() {
-    let timer: any;
-    this._channel.on('ready', () => {
-      timer = setInterval(this.resize, 100);
-    });
-    this._channel.on('disconnected', () => {
-      clearInterval(timer);
-    });
-  }
-
-  private _sendMessage = (message: string) => {
-    this._targetWindow!.postMessage(message, '*');
-  };
-
-  private _receiveMessage = (event: MessageEvent) => {
-    if (!this._allowedOrigins.test(event.origin)) {
-      return;
-    }
-
-    this._channel.receiveMessage(event.data);
-  };
 
   public connect() {
-    if (!this._targetWindow) {
-      this._channel.emit('error', {
-        code: 1,
-        message: "Couldn't find parent window.",
-      });
-      return;
-    }
-
-    window.addEventListener('message', this._receiveMessage);
-    this._channel.connect();
+    this._socket.connect();
   }
-
   public disconnect() {
-    if (!this._targetWindow) {
-      return;
-    }
-
-    window.removeEventListener('message', this._receiveMessage);
-    this._channel.disconnect();
+    this._socket.disconnect();
   }
 
   public on(event: string, fn: (...args: any[]) => void, context?: any) {
-    this._channel.on(event, fn, context);
+    this._socket.on(event, fn, context);
   }
-
   public once(event: string, fn: (...args: any[]) => void, context?: any) {
-    this._channel.once(event, fn, context);
+    this._socket.once(event, fn, context);
   }
-
   public off(event: string, fn: (...args: any[]) => void, context?: any) {
-    this._channel.off(event, fn, context);
+    this._socket.off(event, fn, context);
+  }
+  public emit(event: string, ...args: any[]) {
+    this._socket.emit(event, ...args);
   }
 
-  public emit(event: string, data?: any) {
-    this._channel.send(event, data);
-  }
-
-  public resize = () => {
-    const rect = document.documentElement.getBoundingClientRect();
-    if (this._prevHeight === rect.height) {
-      return;
-    }
-
-    this._prevHeight = rect.height;
-    this._channel.send('resize', {
-      height: rect.height,
-      width: rect.width,
-    });
-  };
+  // public send<T = void>(): Promise<T> {}
 }
 
 export { Client };
