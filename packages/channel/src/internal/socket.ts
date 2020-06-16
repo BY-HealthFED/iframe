@@ -7,23 +7,30 @@ import EventEmitter from 'eventemitter3';
 import { Message, MessageBuilder, MsgType } from './message';
 import { getRandomId } from './utils';
 
+interface Endpoint {
+  id: string;
+}
+
 export class Socket {
   public id: string;
-  public remote: {
-    id: string | null;
-  };
+  public remote: Endpoint | null;
+  public connected: boolean;
 
   private _emitter: EventEmitter;
-  private _builder: MessageBuilder;
+  private _messageBuilder: MessageBuilder;
 
   constructor() {
     this.id = getRandomId();
+    this.remote = null;
+    this.connected = false;
 
     this._emitter = new EventEmitter();
-    this._builder = new MessageBuilder(this);
+    this._messageBuilder = new MessageBuilder(this);
   }
 
-  public postMessage(message: Message) {}
+  public postMessage(message: Message) {
+    // TODO: send
+  }
 
   public handleMessage(raw: string) {
     if (typeof raw !== 'string') {
@@ -32,14 +39,15 @@ export class Socket {
 
     const message = Message.parse(raw);
     if (!message || message.checkSign(this)) {
+      console.log('Invalid message signature.');
       return;
     }
 
     switch (message.type) {
       // Host
-      case MsgType.ACK:
-        break;
       case MsgType.SYN:
+        break;
+      case MsgType.ACK:
         break;
 
       // Client
@@ -75,11 +83,11 @@ export class Socket {
   }
 
   public connect() {
-    this.postMessage(this._builder.SYN());
+    this.postMessage(this._messageBuilder.SYN());
   }
 
   public disconnect() {
-    this.postMessage(this._builder.FIN());
+    this.postMessage(this._messageBuilder.FIN());
   }
 
   public on(event: string, fn: (...args: any[]) => void, context?: any) {
@@ -92,6 +100,6 @@ export class Socket {
     this._emitter.off(event, fn, context);
   }
   public emit(event: string, ...args: any[]) {
-    this.postMessage(this._builder.EVENT(event, ...args));
+    this.postMessage(this._messageBuilder.EVENT(event, ...args));
   }
 }

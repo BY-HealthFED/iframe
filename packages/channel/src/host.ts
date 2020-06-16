@@ -13,18 +13,21 @@ class Host {
     this._socket = new Socket();
   }
 
-  public open() {}
-  public listen() {}
+  public open(url: string) {}
+  public listen(iframe: HTMLIFrameElement) {}
   public close() {}
 
   public on(event: string, fn: (...args: any[]) => void, context?: any) {
     this._socket.on(event, fn, context);
+    return this;
   }
   public once(event: string, fn: (...args: any[]) => void, context?: any) {
     this._socket.once(event, fn, context);
+    return this;
   }
   public off(event: string, fn: (...args: any[]) => void, context?: any) {
     this._socket.off(event, fn, context);
+    return this;
   }
   public emit(event: string, ...args: any[]) {
     this._socket.emit(event, ...args);

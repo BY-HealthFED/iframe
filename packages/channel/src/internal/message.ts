@@ -21,10 +21,10 @@ export const enum MsgType {
 }
 
 export class Message {
-  public readonly sender: string;
-  public readonly receiver: string | null;
-  public readonly type: MsgType;
-  public readonly payload?: any;
+  public sender: string;
+  public receiver: string | null;
+  public type: MsgType;
+  public payload?: any;
 
   constructor(sender: string, receiver: string | null, type: MsgType, payload?: any) {
     this.sender = sender;
@@ -46,7 +46,7 @@ export class Message {
   }
 
   public toString() {
-    return Message.serialize(this);
+    return JSON.stringify({ sender: this.sender, receiver: this.receiver, type: this.type, payload: this.payload });
   }
 
   public static parse(raw: string) {
@@ -64,14 +64,14 @@ export class Message {
 }
 
 export class MessageBuilder {
-  private socket: Socket;
+  public socket: Socket;
 
-  constructor(socket: Socket) {
-    this.socket = socket;
+  constructor(sender: Socket) {
+    this.socket = sender;
   }
 
   public SYN() {
-    return new Message(this.socket.id, '', MsgType.SYN);
+    return new Message(this.socket.id, null, MsgType.SYN);
   }
   public SYN_ACK(remote: string) {
     return new Message(this.socket.id, remote, MsgType.SYN_ACK);
@@ -80,24 +80,24 @@ export class MessageBuilder {
     return new Message(this.socket.id, remote, MsgType.ACK);
   }
   public FIN() {
-    return new Message(this.socket.id, this.socket.remote.id, MsgType.FIN);
+    return new Message(this.socket.id, this.socket.remote!.id, MsgType.FIN);
   }
 
   public PING() {
-    return new Message(this.socket.id, this.socket.remote.id, MsgType.PING);
+    return new Message(this.socket.id, this.socket.remote!.id, MsgType.PING);
   }
   public PONG() {
-    return new Message(this.socket.id, this.socket.remote.id, MsgType.PONG);
+    return new Message(this.socket.id, this.socket.remote!.id, MsgType.PONG);
   }
 
   public EVENT(event: string, ...args: any[]) {
-    return new Message(this.socket.id, this.socket.remote.id, MsgType.EVENT, { event, args });
+    return new Message(this.socket.id, this.socket.remote!.id, MsgType.EVENT, { event, args });
   }
 
   public DATA_SEND(seq: number, data: any) {
-    return new Message(this.socket.id, this.socket.remote.id, MsgType.DATA_SEND, { seq, data });
+    return new Message(this.socket.id, this.socket.remote!.id, MsgType.DATA_SEND, { seq, data });
   }
   public DATA_RECEIVE(seq: number, data: any) {
-    return new Message(this.socket.id, this.socket.remote.id, MsgType.DATA_RECEIVE, { seq, data });
+    return new Message(this.socket.id, this.socket.remote!.id, MsgType.DATA_RECEIVE, { seq, data });
   }
 }
