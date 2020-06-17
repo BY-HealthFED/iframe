@@ -15,17 +15,18 @@ const host = new Host({
   allowedOrigins: ['http://*.example.com'],
   target: '#container',
 });
-host.on('ready', function () {
-  console.log('Host: client ready');
-});
-host.on('error', function (error) {
-  console.error(error);
-});
-host.open('./iframe.html', {
-  style: 'border: 0',
-  width: '100%',
-  height: '100px',
-});
+host
+  .on('ready', function () {
+    console.log('Host: client ready');
+  })
+  .on('error', function (error) {
+    console.error(error);
+  })
+  .open('./iframe.html', {
+    style: 'border: 0',
+    width: '100%',
+    height: '100px',
+  });
 ```
 
 ### iframe.html
@@ -36,13 +37,26 @@ import { Client } from '@byhealth/channel';
 const client = new Client({
   allowedOrigins: ['http://*.example.com'],
 });
-client.on('ready', function () {
-  console.log('Client: Host ready');
-});
-client.on('error', function (error) {
-  console.error(error);
-});
-client.connect();
+client
+  .on('ready', function () {
+    console.log('Client: Host ready');
+  })
+  .on('error', function (error) {
+    console.error(error);
+  })
+  .connect();
+
+// 发起自定义事件
+client.emit('custom_event', payload);
+
+// 连接到服务端
+await client.connect();
+
+// 发送数据“1”到服务端，并等待服务端的答复
+const resp = await client.send('1');
+
+// 等待服务端发送数据过来
+const data = await client.receive();
 ```
 
 ### APIs
