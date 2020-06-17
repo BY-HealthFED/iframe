@@ -26,9 +26,12 @@ export default [
       },
     ],
 
+    external: ['tslib'],
+
     plugins: [
       typescript({
-        target: 'es5',
+        target: 'es2015',
+        importHelpers: true,
       }),
     ],
   },
