@@ -61,19 +61,20 @@ class Host {
   };
 
   public open(url: string, attrs?: any) {
-    if (!this._iframe) {
-      this._iframe = document.createElement('iframe');
-      this._target.appendChild(this._iframe);
-      window.addEventListener('message', this._receiveMessage);
+    if (this._iframe) {
+      this._target.removeChild(this._iframe);
+      this._iframe = undefined;
     }
 
+    this._iframe = document.createElement('iframe');
     if (attrs) {
       Object.keys(attrs).forEach((key) => {
         this._iframe?.setAttribute(key, attrs[key]);
       });
     }
-
     this._iframe.src = url;
+    this._target.appendChild(this._iframe);
+    window.addEventListener('message', this._receiveMessage);
   }
 
   public close() {
