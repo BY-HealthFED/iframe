@@ -1,6 +1,6 @@
 {
   "name": "@byhealth/channel",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "",
   "main": "dist/channel.cjs.js",
   "module": "dist/channel.esm.js",
